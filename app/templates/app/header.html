@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <title>MultiShop - Online Shop Website Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">  
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Custom Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    
+</head>
+
+    
+
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid">
+        <div class="row bg-secondary py-1 px-xl-5">
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="d-inline-flex align-items-center h-100">
+                    <a class="text-body mr-3" href="#">About</a>
+                    <a class="text-body mr-3" href="{% url 'contact' %}">Contact</a>
+                    <a class="text-body mr-3" href="#">Help</a>
+                    <a class="text-body mr-3" href="#">FAQs</a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                    <div style="display: flex;">
+                        {% if user.is_authenticated %}
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">{{ request.user }}</button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a href="{% url 'update_profile' %}" class="dropdown-item">Update Profile</a></li>
+                                    <li><a href="{% url 'passwordchange' %}" class="dropdown-item">Change Password</a></li>
+                                    <li><a href="{% url 'delete_account' %}" class="dropdown-item">Delete Account</a></li>
+                                    <li>
+                                        <form method="POST" action="{% url 'logout' %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="dropdown-item">Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="dropdown-item">Sign in</a>
+                            <a href="{% url 'signup' %}" class="dropdown-item">Sign up</a>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="btn-group mx-2">
+                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">USD</button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><button class="dropdown-item" type="button">EUR</button></li>
+                            <li><button class="dropdown-item" type="button">GBP</button></li>
+                            <li><button class="dropdown-item" type="button">CAD</button></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">EN</button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><button class="dropdown-item" type="button">FR</button></li>
+                            <li><button class="dropdown-item" type="button">AR</button></li>
+                            <li><button class="dropdown-item" type="button">RU</button></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
+            <div class="col-lg-4">
+                <a href="#" class="text-decoration-none">
+                    <span class="h1 text-uppercase text-primary bg-dark px-2">Multi</span>
+                    <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">Shop</span>
+                </a>
+            </div>
+            <div class="col-lg-4 col-6 text-left">
+                <form action="{% url 'product_search' %}" method="get">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Search for products" aria-label="Search for products" value="{{ query }}">
+                        <div class="input-group-append">
+                            <span class="input-group-text bg-transparent text-primary">
+                                <i class="fa fa-search"></i>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-4 col-6 text-right">
+                <p class="m-0">Customer Service</p>
+                <h5 class="m-0">+012 345 6789</h5>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+    <!-- Navbar Start -->
+    <div class="container-fluid bg-dark mb-30">
+        <div class="row px-xl-5">
+            <div class="col-lg-3 d-none d-lg-block">
+                <a class="btn d-flex align-items-center justify-content-between bg-primary w-100" data-bs-toggle="collapse" href="#navbar-vertical" aria-expanded="false">
+                    <h6 class="text-dark m-0"><i class="fa fa-bars mr-2"></i>Categories</h6>
+                    <i class="fa fa-angle-down text-dark"></i>
+                </a>
+                <nav class="collapse position-absolute navbar navbar-vertical navbar-light bg-light" id="navbar-vertical" style="width: calc(100% - 30px); z-index: 1050;">
+                    <div class="navbar-nav w-100">
+                        <div class="nav-item dropdown dropright">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Dresses</a>
+                            <ul class="dropdown-menu" style="z-index: 1060; position: absolute;">
+                                <li><a href="#" class="dropdown-item">Men's Dresses</a></li>
+                                <li><a href="#" class="dropdown-item">Women's Dresses</a></li>
+                                <li><a href="#" class="dropdown-item">Baby's Dresses</a></li>
+                            </ul>
+                        </div>
+                        <a href="#" class="nav-item nav-link">Shirts</a>
+                        <a href="#" class="nav-item nav-link">Jeans</a>
+                        <a href="#" class="nav-item nav-link">Swimwear</a>
+                        <a href="#" class="nav-item nav-link">Sleepwear</a>
+                        <a href="#" class="nav-item nav-link">Sportswear</a>
+                        <a href="#" class="nav-item nav-link">Jumpsuits</a>
+                        <a href="#" class="nav-item nav-link">Blazers</a>
+                        <a href="#" class="nav-item nav-link">Jackets</a>
+                        <a href="#" class="nav-item nav-link">Shoes</a>
+                    </div>
+                </nav>
+            </div>
+            <div class="col-lg-9">
+                <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+                    <a href="#" class="d-block d-lg-none">
+                        <span class="h1 text-uppercase text-dark bg-light px-2">Multi</span>
+                        <span class="h1 text-uppercase text-light bg-primary px-2 ml-n1">Shop</span>
+                    </a>
+                    <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                        <div class="navbar-nav mr-auto">
+                            <a href="{% url 'home' %}" class="nav-item nav-link active">Home</a>
+                            <a href="{% url 'shop' %}" class="nav-item nav-link">Shop</a>
+                          
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Pages</a>
+                                <ul class="dropdown-menu rounded-0 m-0">
+                                    <li><a href="{% url 'cart' %}" class="dropdown-item">Shopping Cart</a></li>
+                                    <li><a href="{% url 'checkout' %}" class="dropdown-item">Checkout</a></li>
+                                </ul>
+                            </div>
+                            <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
+                        </div>
+                        <div class="navbar-nav ml-auto">
+                                
+                            <a href="{% url 'wishlist' %}" class="nav-item nav-link"><i class="far fa-heart"></i></a>
+                            <a href="{% url 'cart' %}" class="nav-item nav-link"><i class="bi bi-cart text-primary"></i></a>
+                            <a href="{% url 'order_history' %}" class="nav-item nav-link"><i class="bi bi-hourglass"></i></a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Navbar End -->
+
+</body>
+
+</html>
+
+
+
+
+

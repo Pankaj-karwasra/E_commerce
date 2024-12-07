@@ -1,0 +1,74 @@
+{% block content %}
+
+<!-- Featured Start -->
+<div class="container-fluid pt-5 pb-3">
+    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
+        <span class="bg-secondary pr-3">Featured Products</span>
+    </h2>
+    <div class="row px-xl-5">
+        {% for product in featured_products %}
+        <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+            <div class="product-item bg-light mb-4" style="height: 350px; border: 1px solid #dee2e6; border-radius: 0.25rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                <a href="{% url 'detail' product.id %}">
+                    <div class="product-img position-relative overflow-hidden" style="height: 200px;">
+                        <img class="img-fluid w-100" src="{{ product.product_image.url }}" alt="{{ product.title }}" style="height: 100%; object-fit: cover;">
+
+                        <!-- Action buttons -->
+                        <div class="product-action" style="position: absolute; top: 15px; right: 15px; display: flex; gap: 10px; align-items: center;">
+                            <!-- Add to Cart Button -->
+                            <a class="btn btn-outline-dark btn-square" href="#" style="margin: 2px;">
+                                <form action="{% url 'add_to_cart' product.id %}" method="post" style="margin: 0;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-dark btn-square" title="Add to Cart" style="display: flex; justify-content: center; align-items: center; padding: 5px; font-size: 16px; width: 36px; height: 36px; line-height: 0;">
+                                        <i class="fa fa-shopping-cart"></i>
+                                    </button>
+                                </form>
+                            </a>
+
+                            <!-- Add/Remove from Wishlist Button -->
+                            <form action="{% url 'add_to_wishlist' product.id %}" method="post" style="margin: 0;">
+                                {% csrf_token %}
+                                {% if product.id in wishlist_ids %}
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn btn-outline-dark btn-square" title="Remove from wishlist" style="display: flex; justify-content: center; align-items: center; padding: 5px; font-size: 16px; width: 36px; height: 36px; line-height: 0;">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-outline-dark btn-square" title="Add to wishlist" style="display: flex; justify-content: center; align-items: center; padding: 5px; font-size: 16px; width: 36px; height: 36px; line-height: 0;">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                {% endif %}
+                            </form>
+
+                            <!-- Sync Button -->
+                            <a class="btn btn-outline-dark btn-square" href="#" title="Sync" style="display: flex; justify-content: center; align-items: center; padding: 5px; font-size: 16px; width: 36px; height: 36px; line-height: 0;">
+                                <i class="fa fa-sync-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="text-center py-4" style="height: 150px;">
+                        <h6 class="text-decoration-none text-truncate" style="color: #333; font-size: 16px; font-weight: 500; line-height: 1.2;">
+                            <a href="{% url 'detail' product.id %}">{{ product.brand }}</a>
+                        </h6>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <h5 class="mb-0" style="color: #333; font-size: 18px; font-weight: 700;">${{ product.discounted_price }}</h5>
+                            {% if product.selling_price %}
+                            <h6 class="text-muted ml-2 mb-0" style="font-size: 14px; text-decoration: line-through; color: #888;">${{ product.selling_price }}</h6>
+                            {% endif %}
+                        </div>
+                        <p class="text-justify" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-height: 40px; color: #666; font-size: 14px;" title="{{ product.description }}">
+                            {{ product.description }}
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center w-100" style="color: #333; font-size: 16px;">No featured products available.</p>
+        {% endfor %}
+    </div>
+</div>
+<!-- Featured End -->
+
+{% endblock %}

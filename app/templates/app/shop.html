@@ -1,0 +1,140 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block content %}
+<!-- Shop Start -->
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <!-- Shop Sidebar Start -->
+        <div class="col-lg-3 col-md-4">
+            <h5 class="section-title position-relative text-uppercase mb-3" style="font-weight: bold; color: #333;">
+                <span class="bg-secondary pr-3" style="padding: 5px; color: black;"><i class="fas fa-tags"></i> Filter by Price</span>
+            </h5>
+            <div class="bg-light p-4 mb-30" style="border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <form method="get" action="{% url 'shop' %}">
+                    <div class="list-group" style="border: none;">
+                        <div class="list-group-item" style="border: none;">
+                            <input type="radio" name="price" value="price-all" id="price-all" 
+                                   {% if request.GET.price == "price-all" or not request.GET.price %}checked{% endif %}>
+                            <label for="price-all" style="cursor: pointer;">All Prices</label>
+                        </div>
+                        <div class="list-group-item" style="border: none;">
+                            <input type="radio" name="price" value="0-100" id="price-1" 
+                                   {% if request.GET.price == "0-100" %}checked{% endif %}>
+                            <label for="price-1" style="cursor: pointer;">$0 - $100</label>
+                        </div>
+                        <div class="list-group-item" style="border: none;">
+                            <input type="radio" name="price" value="100-200" id="price-2" 
+                                   {% if request.GET.price == "100-200" %}checked{% endif %}>
+                            <label for="price-2" style="cursor: pointer;">$100 - $200</label>
+                        </div>
+                        <div class="list-group-item" style="border: none;">
+                            <input type="radio" name="price" value="200-400" id="price-3" 
+                                   {% if request.GET.price == "200-400" %}checked{% endif %}>
+                            <label for="price-3" style="cursor: pointer;">$200 - $400</label>
+                        </div>
+                        <div class="list-group-item" style="border: none;">
+                            <input type="radio" name="price" value="400-600" id="price-4" 
+                                   {% if request.GET.price == "400-600" %}checked{% endif %}>
+                            <label for="price-4" style="cursor: pointer;">$400 - $600</label>
+                        </div>
+                        <div class="list-group-item" style="border: none;">
+                            <input type="radio" name="price" value="600-800" id="price-5" 
+                                   {% if request.GET.price == "600-800" %}checked{% endif %}>
+                            <label for="price-5" style="cursor: pointer;">$600 - $800</label>
+                        </div>
+                        <div class="list-group-item" style="border: none;">
+                            <input type="radio" name="price" value="800-1000" id="price-6" 
+                                   {% if request.GET.price == "800-1000" %}checked{% endif %}>
+                            <label for="price-6" style="cursor: pointer;">$800 - $1000</label>
+                        </div>
+                    </div>
+
+                    <h5 class="section-title position-relative text-uppercase mt-4 mb-3" style="font-weight: bold; color: #333;">
+                        <span class="bg-secondary pr-3" style="padding: 5px; color: black;"><i class="fas fa-paint-brush"></i> Filter by Color</span>
+                    </h5>
+                    <div class="list-group" style="border: none;">
+                        <div class="list-group-item" style="border: none;">
+                            <input type="radio" name="color" value="color-all" id="color-all" 
+                                   {% if request.GET.color == "color-all" or not request.GET.color %}checked{% endif %}>
+                            <label for="color-all" style="cursor: pointer;">All Colors</label>
+                        </div>
+                        {% for color in color_counts %}
+                        <div class="list-group-item" style="border: none;">
+                            <input type="radio" name="color" value="{{ color.id }}" id="color-{{ color.id }}" 
+                                   {% if request.GET.color == color.id|stringformat:"s" %}checked{% endif %}>
+                            <label for="color-{{ color.id }}" style="cursor: pointer;">{{ color.name }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <h5 class="section-title position-relative text-uppercase mt-4 mb-3" style="font-weight: bold; color: #333;">
+                        <span class="bg-secondary pr-3" style="padding: 5px; color: black;"><i class="fas fa-tshirt"></i> Filter by Size</span>
+                    </h5>
+                    <div class="list-group" style="border: none;">
+                        <div class="list-group-item" style="border: none;">
+                            <input type="radio" name="size" value="size-all" id="size-all" 
+                                   {% if request.GET.size == "size-all" or not request.GET.size %}checked{% endif %}>
+                            <label for="size-all" style="cursor: pointer;">All Sizes</label>
+                        </div>
+                        {% for size in size_counts %}
+                        <div class="list-group-item" style="border: none;">
+                            <input type="radio" name="size" value="{{ size.name }}" id="size-{{ size.id }}" 
+                                   {% if request.GET.size == size.name %}checked{% endif %}>
+                            <label for="size-{{ size.id }}" style="cursor: pointer;">{{ size.name }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary mt-3" style="width: 100%;">Apply Filters</button>
+                </form>
+            </div>
+        </div>
+        <!-- Shop Sidebar End -->
+
+        <!-- Shop Product Start -->
+        <div class="col-lg-9 col-md-8">
+            <div class="row pb-3">
+                {% if not products %}
+                <div class="col-12">
+                    <div class="alert alert-info" role="alert">
+                        No products found for the selected filter(s).
+                    </div>
+                </div>
+                {% else %}
+                {% for product in products %}
+                <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
+                    <div class="card product-item border-0 mb-4" style="height: 100%;">
+                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0" style="height: 200px; display: flex; align-items: center; justify-content: center;">
+                            <img src="{{ product.product_image.url }}" alt="{{ product.title }}" style="height: 100%; width: auto; object-fit: cover;">
+                        </div>
+                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3" style="height: 150px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <h6 class="text-truncate mb-3" style="font-size: 16px;">{{ product.title }}</h6>
+                            <div class="d-flex justify-content-center">
+                                <h6 style="font-size: 18px; color: #333;">${{ product.discounted_price }}</h6>
+                                <h6 class="text-muted ml-2" style="text-decoration: line-through;">${{ product.selling_price }}</h6>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between bg-light border">
+                            <a href="{% url 'detail' product.id %}" class="btn btn-sm text-dark p-0" style="text-decoration: none;">
+                                <i class="fas fa-eye text-primary mr-1"></i>View Detail
+                            </a>
+                            <form action="{% url 'add_to_cart' product.id %}" method="post" style="margin: 0;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm text-dark p-0" style="text-decoration: none;">
+                                    <i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        <!-- Shop Product End -->
+    </div>
+</div>
+<!-- Shop End -->
+
+{% endblock %}

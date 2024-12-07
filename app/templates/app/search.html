@@ -1,0 +1,35 @@
+{% extends 'app/base.html' %}
+{% block content %}
+<div class="container">
+    <h3>Search Results</h3>
+    <div class="row">
+        {% for product in products %}
+        <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="card">
+                <img src="{{ product.product_image.url }}" class="card-img-top" alt="{{ product.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.title }}</h5>
+                    <p class="card-text">{{ product.description|truncatewords:20 }}</p>
+                    <p class="card-text">
+                        <strong>Price: </strong>
+                        {% if product.discounted_price %}
+                            {{ product.discounted_price }}
+                        {% else %}
+                            {{ product.selling_price }}
+                        {% endif %}
+                    </p>
+                    <form action="{% url 'add_to_cart' product.id %}" method="post" style="margin: 0;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-shopping-cart mr-1"></i>Add To Cart
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No products found matching your search query.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,240 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Carousel Start -->
+<div class="container-fluid mb-3">
+    <div class="row px-xl-5">
+        <div class="col-lg-8">
+            <div id="header-carousel" class="carousel slide carousel-fade mb-30 mb-lg-0" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    <li data-target="#header-carousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#header-carousel" data-slide-to="1"></li>
+                    <li data-target="#header-carousel" data-slide-to="2"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <!-- Dynamically display discounted categories in the carousel -->
+                    {% for category in categories_with_discount %}
+                    <div class="carousel-item position-relative {% if forloop.first %} active {% endif %}"
+                    style="height: 430px;">
+                        <img class="position-absolute w-100 h-100" src="{{ category.categories_image.url }}"
+                        style="object-fit: cover;">
+                        <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                            <div class="p-3" style="max-width: 700px;">
+                                <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">
+                                    {{ category.category }}
+                                </h1>
+                                <h3 class="text-white mb-3">Save {{ category.discount_percentage }}%</h3>
+                                <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
+                                href="{% url 'discounted_categories' category.id %}">Shop Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-4">
+            <!-- First discounted product -->
+            {% if discounted_product_1 %}
+            <div class="product-offer mb-30" style="height: 200px;">
+                <img class="img-fluid" src="{{ discounted_product_1.product_image.url }}"
+                alt="{{ discounted_product_1.title }}">
+                <div class="offer-text">
+                    <h6 class="text-white text-uppercase">Save {{ discounted_product_1.discount_percentage }}%</h6>
+                    <h3 class="text-white mb-3">{{ discounted_product_1.title }}</h3>
+                    <a href="{% url 'detail' discounted_product_1.id %}" class="btn btn-primary">Shop Now</a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Second discounted product -->
+            {% if discounted_product_2 %}
+            <div class="product-offer mb-30" style="height: 200px;">
+                <img class="img-fluid" src="{{ discounted_product_2.product_image.url }}"
+                alt="{{ discounted_product_2.title }}">
+                <div class="offer-text">
+                    <h6 class="text-white text-uppercase">Save {{ discounted_product_2.discount_percentage }}%</h6>
+                    <h3 class="text-white mb-3">{{ discounted_product_2.title }}</h3>
+                    <a href="{% url 'detail' discounted_product_2.id %}" class="btn btn-primary">Shop Now</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<!-- Carousel End -->
+
+
+<!-- Featured Start -->
+<div class="container-fluid pt-5">
+    <div class="row px-xl-5 pb-3">
+        <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+            <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
+                <h1 class="fa fa-check text-primary m-0 mr-3"></h1>
+                <h5 class="font-weight-semi-bold m-0">Quality Product</h5>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+            <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
+                <h1 class="fa fa-shipping-fast text-primary m-0 mr-2"></h1>
+                <h5 class="font-weight-semi-bold m-0">Free Shipping</h5>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+            <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
+                <h1 class="fas fa-exchange-alt text-primary m-0 mr-3"></h1>
+                <h5 class="font-weight-semi-bold m-0">14-Day Return</h5>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+            <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
+                <h1 class="fa fa-phone-volume text-primary m-0 mr-3"></h1>
+                <h5 class="font-weight-semi-bold m-0">24/7 Support</h5>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Featured End -->
+
+
+<!-- Categories Start -->
+{% include 'app/category_products.html' %}
+<!-- Categories End -->
+
+<!--fetured start-->
+{% include 'app/featured.html' %}
+<!--featured end-->
+
+
+
+
+<!-- Offer Start -->
+<div class="container-fluid pt-5 pb-3">
+    <div class="row px-xl-5">
+        {% for category in categories_with_discount %}
+        <div class="col-md-3">
+            <div class="product-offer mb-30" style="height: 300px;">
+                <img class="img-fluid" src="{{ category.categories_image.url }}" alt="{{ category.category }}">
+                <div class="offer-text">
+                    <h6 class="text-white text-uppercase">Save {{ category.discount_percentage }}%</h6>
+                    <h3 class="text-white mb-3">Special Offer</h3>
+                    <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
+                    href="{% url 'discounted_categories' category.id %}">Shop Now</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+<!-- Recent Products Start -->
+
+<div class="container-fluid pt-5 pb-3">
+    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
+        <span class="bg-secondary pr-3">Recent Products</span>
+    </h2>
+    <div class="row px-xl-5">
+        {% for product in recent_products %}
+        <div class="col-lg-3 col-md-4 col-sm-6 pb-4">
+            <div class="product-item bg-light text-center mb-4" style="border: 1px solid #dee2e6; border-radius: 0.25rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                <div class="product-img position-relative overflow-hidden">
+                    <img class="img-fluid" src="{{ product.product_image.url }}" alt="{{ product.title }}" style="height: 200px; object-fit: cover; width: 100%;">
+                    <div class="product-action" style="position: absolute; top: 15px; right: 15px;">
+                        <a class="btn btn-outline-dark btn-square" href="#" style="margin: 2px;">
+                            <form action="{% url 'add_to_cart' product.id %}" method="post" style="margin: 0;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-dark btn-square" title="Add to Cart" style="display: flex; justify-content: center; align-items: center; padding: 5px; font-size: 16px; width: 36px; height: 36px; line-height: 0;">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </button>
+                            </form>
+                        </a>
+                        
+                        <!-- Form for adding/removing from wishlist -->
+                        <form action="{% url 'add_to_wishlist' product.id %}" method="post" style="display:inline;" class="wishlist-form">
+                            {% csrf_token %}
+                            {% if product.id in wishlist_ids %}  <!-- Check if product is in wishlist -->
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-outline-dark btn-square" style="margin: 2px;" title="Remove from wishlist">
+                                    <i class="fas fa-heart"></i>  <!-- Filled heart icon for removing from wishlist -->
+                                </button>
+                            {% else %}
+                                <button type="submit" class="btn btn-outline-dark btn-square" style="margin: 2px;" title="Add to wishlist">
+                                    <i class="far fa-heart"></i>  <!-- Heart icon for adding to wishlist -->
+                                </button>
+                            {% endif %}
+                        </form>
+
+                        <a class="btn btn-outline-dark btn-square" href="#" style="margin: 2px;">
+                            <i class="fa fa-sync-alt"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="p-4" style="padding: 1.5rem;">
+                    <a class="h6 text-decoration-none text-truncate" href="{% url 'detail' product.id %}" style="color: #333;">
+                        {{ product.title }}
+                    </a>
+                    <div class="d-flex align-items-center justify-content-center mt-2">
+                        <h5 style="margin: 0;">${{ product.discounted_price }}</h5>
+                        {% if product.selling_price %}
+                        <h6 class="text-muted ml-2" style="margin: 0;"><del>${{ product.selling_price }}</del></h6>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+<!-- Products End -->
+
+
+
+<!-- Vendor Start -->
+<div class="container-fluid py-5" style="background-color: #f8f9fa;">
+    <div class="row px-xl-5">
+        <div class="col" style="display: flex; justify-content: center; align-items: center;">
+            <div class="owl-carousel vendor-carousel"
+            style="display: flex; justify-content: center; align-items: center;">
+                <div class="bg-light p-4" style="margin: 0 10px; border-radius: 10px;">
+                    <img src="static/img/vendor-1.jpg" alt="" style="max-width: 100%; height: auto; display: block;">
+                </div>
+                <div class="bg-light p-4" style="margin: 0 10px; border-radius: 10px;">
+                    <img src="static/img/vendor-2.jpg" alt="" style="max-width: 100%; height: auto; display: block;">
+                </div>
+                <div class="bg-light p-4" style="margin: 0 10px; border-radius: 10px;">
+                    <img src="static/img/vendor-3.jpg" alt="" style="max-width: 100%; height: auto; display: block;">
+                </div>
+                <div class="bg-light p-4" style="margin: 0 10px; border-radius: 10px;">
+                    <img src="static/img/vendor-4.jpg" alt="" style="max-width: 100%; height: auto; display: block;">
+                </div>
+                <div class="bg-light p-4" style="margin: 0 10px; border-radius: 10px;">
+                    <img src="static/img/vendor-5.jpg" alt="" style="max-width: 100%; height: auto; display: block;">
+                </div>
+                <div class="bg-light p-4" style="margin: 0 10px; border-radius: 10px;">
+                    <img src="static/img/vendor-6.jpg" alt="" style="max-width: 100%; height: auto; display: block;">
+                </div>
+                <div class="bg-light p-4" style="margin: 0 10px; border-radius: 10px;">
+                    <img src="static/img/vendor-7.jpg" alt="" style="max-width: 100%; height: auto; display: block;">
+                </div>
+                <div class="bg-light p-4" style="margin: 0 10px; border-radius: 10px;">
+                    <img src="static/img/vendor-8.jpg" alt="" style="max-width: 100%; height: auto; display: block;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Vendor End -->
+
+{% endblock %}
+
+
+

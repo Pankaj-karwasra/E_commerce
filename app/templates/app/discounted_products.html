@@ -1,0 +1,28 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Products with {{ discount_percentage }}% Discount</h2>
+    <div class="row">
+        {% for product in products %}
+            <div class="col-md-4">
+                <div class="product-item">
+                    <img src="{{ product.product_image.url }}" alt="{{ product.title }}" class="img-fluid">
+                    <h3>{{ product.title }}</h3>
+                    <p>
+                        {% if product.discounted_price %}
+                            <del>${{ product.selling_price }}</del> ${{ product.discounted_price }}
+                        {% else %}
+                            ${{ product.selling_price }}
+                        {% endif %}
+                    </p>
+                    <p>Discount: {{ product.discounts.first.discount_percentage }}%</p>
+                    <a href="{% url 'detail' product.id %}" class="btn btn-primary">View Product</a>
+                </div>
+            </div>
+        {% empty %}
+            <p>No products available with this discount.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,210 @@
+{% extends 'app/base.html' %}
+{% block content %}
+{% load static %}
+
+<!-- Shop Detail Start -->
+<div class="container-fluid pb-5">
+    <div class="row px-xl-5">
+        <!-- Product Images Carousel -->
+        <div class="col-lg-5 mb-30">
+            <div id="product-carousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner bg-light">
+                    <div class="carousel-item active">
+                        <img class="w-100 h-100 img-fluid rounded" src="{{ detail.product_image.url }}" alt="Product Image">
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
+                    <i class="fa fa-2x fa-angle-left text-dark"></i>
+                </a>
+                <a class="carousel-control-next" href="#product-carousel" data-slide="next">
+                    <i class="fa fa-2x fa-angle-right text-dark"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-lg-7 h-auto mb-30">
+            <div class="h-100 bg-white shadow-sm rounded p-30">
+                <h3 class="mb-3 font-weight-bold">{{ detail.title }}</h3>
+                <h5 class="text-muted">{{ detail.brand }}</h5>
+                <div class="d-flex mb-3 align-items-center">
+                    <div class="text-primary mr-2">
+                        {% for i in star_range %}
+                            <small class="{% if i <= detail.average_rating %}fas{% else %}far{% endif %} fa-star"></small>
+                        {% endfor %}
+                    </div>
+                    <small class="pt-1">({{ detail.reviews_count }} Reviews)</small>
+                </div>
+
+                <!-- Display final price with discount -->
+                <h3 class="font-weight-semi-bold mb-4" style="font-size: 24px; color: #333; display: flex; align-items: baseline; gap: 10px;">
+                    Price: 
+                    {% if discount_percentage > 0 %}
+                        <span style="color: #D50000; font-size: 28px; font-weight: bold;">${{ final_price|floatformat:2 }}</span>
+                        <span style="text-decoration: line-through; color: #888; font-size: 20px;">${{ detail.selling_price|floatformat:2 }}</span>
+                        <span style="color: #4CAF50; font-size: 18px;">({{ discount_percentage|floatformat:2 }}% OFF)</span>
+                        <span style="color: #FFA500; font-size: 16px;">🔥 Limited Time Offer!</span>
+                    {% else %}
+                        <span style="color: #D50000; font-size: 28px; font-weight: bold;">${{ final_price|floatformat:2 }}</span>
+                    {% endif %}
+                </h3>
+
+                <p class="mb-4 text-muted">{{ detail.description }}</p>
+
+                <!-- Add to Cart Form -->
+                <form method="POST" action="{% url 'add_to_cart' detail.id %}">
+                    {% csrf_token %}
+                    <div class="d-flex mb-4">
+                        <strong class="text-dark mr-3">Sizes:</strong>
+                        <select name="size" required>
+                            {% for size in detail.sizes.all %}
+                                <option value="{{ size.id }}">{{ size.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="d-flex mb-4">
+                        <strong class="text-dark mr-3">Colors:</strong>
+                        <select name="color" required>
+                            {% for color in detail.colors.all %}
+                                <option value="{{ color.id }}">{{ color.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="d-flex mb-4">
+                        <div class="input-group quantity mr-3" style="width: 130px;">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-primary btn-minus">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                            <input type="text" class="form-control bg-secondary border-0 text-center" value="1" name="quantity" id="quantity" readonly>
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-primary btn-plus">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-shopping-cart mr-1"></i>Add To Cart
+                    </button>
+                </form>
+
+                <div class="d-flex pt-2">
+                    <strong class="text-dark mr-2">Share on:</strong>
+                    <div class="d-inline-flex">
+                        <a class="text-dark px-2" href="#">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a class="text-dark px-2" href="#">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a class="text-dark px-2" href="#">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a class="text-dark px-2" href="#">
+                            <i class="fab fa-pinterest"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Rating and Review Form -->
+                <div class="mt-4">
+                    <button type="button" class="btn btn-secondary" id="write-review-btn">Write a Review</button>
+                    <form method="POST" id="review-form" style="display: none;">
+                        {% csrf_token %}
+                        <div class="d-flex mb-3">
+                            <label for="rating" class="mr-2">Rating:</label>
+                            <select name="rating" id="rating" required>
+                                {% for i in star_range %}
+                                    <option value="{{ i }}">{{ i }} Stars</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="comment">Comment:</label>
+                            <textarea class="form-control" id="comment" name="comment" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="size">Size:</label>
+                            <select name="size" id="size" required>
+                                {% for size in detail.sizes.all %}
+                                    <option value="{{ size.id }}">{{ size.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="color">Color:</label>
+                            <select name="color" id="color" required>
+                                {% for color in detail.colors.all %}
+                                    <option value="{{ color.id }}">{{ color.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </form>
+                    {% if error %}
+                        <div class="alert alert-danger mt-3">{{ error }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Reviews Section -->
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Description, Information, and Reviews Tabs -->
+    <div class="row px-xl-5">
+        <div class="col">
+            <div class="bg-light p-30 rounded shadow-sm">
+                <div class="nav nav-tabs mb-4">
+                    <a class="nav-item nav-link text-dark active" data-toggle="tab" href="#tab-pane-1" onclick="activateTab('tab-pane-1')">Description</a>
+                    <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-2" onclick="activateTab('tab-pane-2')">Information</a>
+                    <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-3" onclick="activateTab('tab-pane-3')">Reviews ({{ detail.reviews_count }})</a>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab-pane-1">
+                        <h4 class="mb-3">Product Description</h4>
+                        <p>{{ detail.description }}</p>
+                    </div>
+                    <div class="tab-pane fade" id="tab-pane-2">
+                        <h4 class="mb-3">Additional Information</h4>
+                        <p>Some additional information about the product.</p>
+                    </div>
+                    <div class="tab-pane fade" id="tab-pane-3">
+                        <h4 class="mb-3">Customer Reviews</h4>
+                        {% for review in reviews %}
+                            <div class="media mb-4">
+                                <div class="media-body">
+                                    <h5 class="mt-0 mb-1">{{ review.user.username }} ({{ review.rating }} Stars)</h5>
+                                    <p>{{ review.comment }}</p>
+                                    <small class="text-muted">Size: {{ review.size.name }}, Color: {{ review.color.name }}</small><br>
+
+                                    <small class="text-muted">{{ review.created_at }}</small>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('write-review-btn').addEventListener('click', function() {
+        var reviewForm = document.getElementById('review-form');
+        reviewForm.style.display = reviewForm.style.display === 'none' ? 'block' : 'none';
+    });
+
+    function activateTab(tabId) {
+        document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('show', 'active'));
+        document.getElementById(tabId).classList.add('show', 'active');
+    }
+</script>
+
+{% endblock %}

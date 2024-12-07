@@ -1,0 +1,47 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Section heading -->
+    <div class="row mb-4">
+        <div class="col text-center">
+            <h2 class="display-4"> {{ category.category }}</h2>
+            <p class="lead">Grab the best deals on top products with exclusive discounts!</p>
+        </div>
+    </div>
+
+    <!-- Product display -->
+    <div class="row">
+        {% for product in products %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 product-item shadow-sm border-0 rounded">
+                    <!-- Product image -->
+                    <img src="{{ product.product_image.url }}" class="card-img-top img-fluid rounded-top" alt="{{ product.title }}" style="height: 250px; object-fit: cover;">
+                    
+                    <!-- Product details -->
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ product.title }}</h5>
+                        <p class="text-muted mb-2">
+                            <!-- If the product has a discounted price, show the old price as well -->
+                            {% if product.discounted_price %}
+                                <span class="text-danger"><del>${{ product.selling_price }}</del></span> 
+                                <span class="text-success h5">${{ product.discounted_price }}</span>
+                            {% else %}
+                                <span class="text-primary h5">${{ product.selling_price }}</span>
+                            {% endif %}
+                        </p>
+
+                       
+                        <!-- View product button -->
+                        <a href="{% url 'detail' product.id %}" class="btn btn-outline-primary mt-3">View Product</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col text-center">
+                <p class="lead">No products available in this category with discounts at the moment.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

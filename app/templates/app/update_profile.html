@@ -1,0 +1,56 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+<section id="customer_update_section">
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h3 class="text-center mb-4">Update Your Customer Information</h3>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        {{ form.name.label_tag }}
+                        {{ form.name }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.locality.label_tag }}
+                        {{ form.locality }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.city.label_tag }}
+                        {{ form.city }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.zipcode.label_tag }}
+                        {{ form.zipcode }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.state.label_tag }}
+                        {{ form.state }}
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Update Information</button>
+                </form>
+
+                {% if form.errors %}
+                    <div class="alert alert-danger mt-3">
+                        <ul>
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
